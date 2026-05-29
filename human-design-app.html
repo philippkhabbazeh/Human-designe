@@ -107,7 +107,7 @@
     font-size: 22.5px;
     font-weight: 500;
     color: var(--text-dim);
-    line-height: 1.55;
+    line-height: 1.45;
   }
 
   /* NAV TABS */
@@ -202,7 +202,7 @@
     margin-top: 8px;
     font-size: 20px;
     color: var(--text-mid);
-    line-height: 1.6;
+    line-height: 1.45;
     padding-left: 2px;
   }
 
@@ -406,7 +406,7 @@
 
   .section-text {
     font-size: 22.5px;
-    line-height: 1.6;
+    line-height: 1.45;
     font-weight: 500;
     color: var(--text-mid);
     padding-top: 14px;
@@ -524,7 +524,7 @@
 
   .empty-state p {
     font-size: 18.8px;
-    line-height: 1.55;
+    line-height: 1.45;
   }
 
   /* ACCURACY BADGE */
@@ -999,7 +999,7 @@
   .center-modal-body {
     padding: 20px 24px;
     font-size: 20px;
-    line-height: 1.6;
+    line-height: 1.45;
     color: var(--text-mid);
   }
   .center-modal-body strong { color: var(--text); font-weight: 600; }
@@ -1013,7 +1013,7 @@
     font-size: 17.5px;
     color: var(--text-dim);
     font-style: italic;
-    line-height: 1.6;
+    line-height: 1.45;
   }
 
   /* CITY AUTOCOMPLETE */
@@ -2688,22 +2688,25 @@ async function onCityInput(el) {
     return;
   }
 
+  // First show local results immediately
+  const local = localCitySearch(q);
+  if (local.length > 0) {
+    showLocalSuggestions(local);
+  }
+
   citySearchTimer = setTimeout(async () => {
     try {
-      // Use Nominatim (OpenStreetMap) - free, no key needed
       const resp = await fetch(
-        `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&limit=5&featuretype=city&addressdetails=1`,
-        { headers: { 'Accept-Language': 'en' } }
+        'https://nominatim.openstreetmap.org/search?q=' + encodeURIComponent(q) + '&format=json&limit=6&addressdetails=1&featuretype=city',
+        { headers: { 'Accept-Language': 'en-US,en' } }
       );
       if (!resp.ok) return;
       const results = await resp.json();
-      showCitySuggestions(results);
+      if (results && results.length > 0) showCitySuggestions(results);
     } catch(e) {
-      // fallback to local map
-      const local = localCitySearch(q);
-      if (local.length > 0) showLocalSuggestions(local);
+      console.log('Nominatim error:', e);
     }
-  }, 300);
+  }, 400);
 }
 
 function showCitySuggestions(results) {
