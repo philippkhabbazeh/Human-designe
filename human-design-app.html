@@ -1749,14 +1749,22 @@ function renderResult(data) {
       'Sacral': 'Сакральный', 'Solar Plexus': 'Солнечное сплетение',
       'Spleen': 'Селезёнка', 'Root': 'Корневой'
     };
-    const translated = data.apiCenters.map(c => centerNames[c] || c);
-    accHtml += `<div class="centers-row"><span class="centers-label">Определённые центры:</span><div class="centers-tags">${translated.map((c, i) => '<span class=\"center-tag defined\" onclick=\"openCenterModal(\'' + (apiCenters[i]||c) + '\', \'' + c + '\', true, currentResult)\">' + c + '</span>').join('')}</div></div>`;
+    const apiCentersLocal = data.apiCenters;
+    const translated = apiCentersLocal.map(c => centerNames[c] || c);
+    const definedTagsHtml = translated.map((c, i) => {
+      const key = apiCentersLocal[i] || c;
+      return '<span class="center-tag defined" onclick="openCenterModal(\'' + key + '\', \'' + c + '\', true, currentResult)">' + c + '</span>';
+    }).join('');
+    accHtml += '<div class="centers-row"><span class="centers-label">Определённые центры:</span><div class="centers-tags">' + definedTagsHtml + '</div></div>';
 
     // Undefined centers
     const allCenters = ['Голова','Акаша','Горло','Г-центр','Эго','Сакральный','Солнечное сплетение','Селезёнка','Корневой'];
     const undefined_c = allCenters.filter(c => !translated.includes(c));
     if (undefined_c.length > 0) {
-      accHtml += `<div class="centers-row"><span class="centers-label">Не определённые:</span><div class="centers-tags">${undefined_c.map(c => '<span class=\"center-tag undefined\" onclick=\"openCenterModal(ruToKey(\'' + c + '\'), \'' + c + '\', false, currentResult)\">' + c + '</span>').join('')}</div></div>`;
+      const undefinedTagsHtml = undefined_c.map(c => {
+        return '<span class="center-tag undefined" onclick="openCenterModal(ruToKey(\'' + c + '\'), \'' + c + '\', false, currentResult)">' + c + '</span>';
+      }).join('');
+      accHtml += '<div class="centers-row"><span class="centers-label">Не определённые:</span><div class="centers-tags">' + undefinedTagsHtml + '</div></div>';
     }
   }
 
