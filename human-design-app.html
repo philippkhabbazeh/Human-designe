@@ -911,19 +911,109 @@
   }
   .center-tag {
     border-radius: 20px;
-    padding: 4px 12px;
-    font-size: 13px;
+    padding: 6px 14px;
+    font-size: 14px;
     font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    -webkit-tap-highlight-color: transparent;
   }
+  .center-tag:active { transform: scale(0.95); }
   .center-tag.defined {
-    background: rgba(201,169,110,0.15);
-    border: 1px solid rgba(201,169,110,0.4);
+    background: rgba(201,169,110,0.2);
+    border: 1.5px solid var(--gold);
     color: var(--gold);
   }
   .center-tag.undefined {
     background: var(--surface2);
-    border: 1px solid var(--border);
+    border: 1px solid #555;
+    color: #aaa;
+  }
+
+  /* CENTER MODAL */
+  .center-modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.75);
+    z-index: 200;
+    align-items: flex-end;
+    justify-content: center;
+  }
+  .center-modal-overlay.open { display: flex; animation: overlayIn 0.2s ease; }
+  .center-modal-sheet {
+    background: var(--surface);
+    border-radius: 24px 24px 0 0;
+    width: 100%;
+    max-width: 430px;
+    padding: 0 0 40px;
+    max-height: 80vh;
+    overflow-y: auto;
+    animation: sheetUp 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  .center-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    background: var(--surface);
+    z-index: 1;
+  }
+  .center-modal-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .center-modal-badge {
+    font-size: 12px;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 20px;
+  }
+  .center-modal-badge.defined {
+    background: rgba(201,169,110,0.2);
+    border: 1px solid var(--gold);
+    color: var(--gold);
+  }
+  .center-modal-badge.undefined {
+    background: var(--surface2);
+    border: 1px solid #555;
+    color: #aaa;
+  }
+  .center-modal-close {
+    background: var(--surface2);
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    font-size: 16px;
     color: var(--text-dim);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .center-modal-body {
+    padding: 20px 24px;
+    font-size: 16px;
+    line-height: 1.8;
+    color: var(--text-mid);
+  }
+  .center-modal-body strong { color: var(--text); font-weight: 600; }
+  .center-modal-body .example {
+    display: block;
+    margin-top: 12px;
+    padding: 12px 16px;
+    background: var(--surface2);
+    border-radius: 12px;
+    border-left: 3px solid var(--gold-dim);
+    font-size: 14px;
+    color: var(--text-dim);
+    font-style: italic;
+    line-height: 1.6;
   }
 </style>
 </head>
@@ -1660,13 +1750,13 @@ function renderResult(data) {
       'Spleen': 'Селезёнка', 'Root': 'Корневой'
     };
     const translated = data.apiCenters.map(c => centerNames[c] || c);
-    accHtml += `<div class="centers-row"><span class="centers-label">Определённые центры:</span><div class="centers-tags">${translated.map(c => `<span class="center-tag defined">${c}</span>`).join('')}</div></div>`;
+    accHtml += `<div class="centers-row"><span class="centers-label">Определённые центры:</span><div class="centers-tags">${translated.map((c, i) => `<span class="center-tag defined" onclick="openCenterModal('${apiCenters[i]}', '${c}', true, currentResult)">${c}</span>`).join('')}</div></div>`;
 
     // Undefined centers
     const allCenters = ['Голова','Акаша','Горло','Г-центр','Эго','Сакральный','Солнечное сплетение','Селезёнка','Корневой'];
     const undefined_c = allCenters.filter(c => !translated.includes(c));
     if (undefined_c.length > 0) {
-      accHtml += `<div class="centers-row"><span class="centers-label">Не определённые:</span><div class="centers-tags">${undefined_c.map(c => `<span class="center-tag undefined">${c}</span>`).join('')}</div></div>`;
+      accHtml += `<div class="centers-row"><span class="centers-label">Не определённые:</span><div class="centers-tags">${undefined_c.map(c => `<span class="center-tag undefined" onclick="openCenterModal('${Object.entries({'Голова':'Head','Акаша':'Ajna','Горло':'Throat','Г-центр':'G','Эго':'Heart','Сакральный':'Sacral','Солнечное сплетение':'Solar Plexus','Селезёнка':'Spleen','Корневой':'Root'}).find(([k])=>k===c)?.[1]||c}', '${c}', false, currentResult)">${c}</span>`).join('')}</div></div>`;
     }
   }
 
@@ -2491,6 +2581,37 @@ function translateCity(city) {
   return city;
 }
 
+
+// ─── CENTER MODAL ────────────────────────────────────────────────────────────
+
+function openCenterModal(key, nameRu, isDefined, data) {
+  const info = CENTER_INFO[key] || CENTER_INFO[nameRu];
+  if (!info) return;
+  const name = (data && data.name ? data.name : 'Этот человек').split(' ')[0];
+
+  document.getElementById('cm-title').textContent = info.ru || nameRu;
+  document.getElementById('cm-badge-wrap').innerHTML = isDefined
+    ? `<span class="center-modal-badge defined">◆ Определён</span>`
+    : `<span class="center-modal-badge undefined">◇ Не определён</span>`;
+
+  const personalText = isDefined
+    ? (info.defined_personal || info.defined || '').replace(/\{\{name\}\}/g, name)
+    : (info.undefined_personal || info.undefined || '').replace(/\{\{name\}\}/g, name);
+  const example = isDefined ? info.defined_example : info.undefined_example;
+
+  document.getElementById('cm-body').innerHTML =
+    `<p>${personalText}</p>` +
+    (example ? `<span class="example">${example}</span>` : '');
+
+  document.getElementById('center-modal-overlay').classList.add('open');
+}
+
+function closeCenterModal(e) {
+  if (e.target === document.getElementById('center-modal-overlay')) {
+    document.getElementById('center-modal-overlay').classList.remove('open');
+  }
+}
+
 </script>
 
 <!-- DATE PICKER -->
@@ -2544,6 +2665,21 @@ function translateCity(city) {
       </div>
     </div>
     <div class="picker-clear-btn" onclick="clearTime()">✕ Убрать время</div>
+  </div>
+</div>
+
+
+<!-- CENTER MODAL -->
+<div class="center-modal-overlay" id="center-modal-overlay" onclick="closeCenterModal(event)">
+  <div class="center-modal-sheet">
+    <div class="center-modal-header">
+      <div>
+        <div class="center-modal-title" id="cm-title">—</div>
+        <div id="cm-badge-wrap" style="margin-top:6px"></div>
+      </div>
+      <button class="center-modal-close" onclick="document.getElementById('center-modal-overlay').classList.remove('open')">✕</button>
+    </div>
+    <div class="center-modal-body" id="cm-body"></div>
   </div>
 </div>
 
