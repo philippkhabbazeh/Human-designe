@@ -1,0 +1,1765 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Дизайн Человека</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0d0f;
+    --surface: #161618;
+    --surface2: #1e1e22;
+    --border: #2a2a30;
+    --text: #e8e4dc;
+    --text-dim: #7a7880;
+    --text-mid: #b0acb8;
+    --gold: #c9a96e;
+    --gold-dim: #7a6540;
+    --manifestor: #c97a6e;
+    --generator: #6ec97a;
+    --manifgen: #6e9ec9;
+    --projector: #c9c26e;
+    --reflector: #b06ec9;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Nunito', sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Background texture */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(ellipse at 20% 20%, rgba(201,169,110,0.04) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 80%, rgba(110,158,201,0.04) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .app {
+    max-width: 430px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+  }
+
+  /* SCREENS */
+  .screen {
+    display: none;
+    min-height: 100vh;
+    padding: 0 0 40px;
+    animation: fadeIn 0.4s ease;
+  }
+  .screen.active { display: block; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* HEADER */
+  .header {
+    padding: 52px 24px 24px;
+    position: relative;
+  }
+
+  .logo {
+    font-family: 'Nunito', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 10px;
+  }
+
+  .header-title {
+    font-family: 'Nunito', sans-serif;
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--text);
+  }
+
+  .header-title em {
+    font-style: normal;
+    color: var(--gold);
+  }
+
+  .header-sub {
+    margin-top: 12px;
+    font-size: 15px;
+    color: var(--text-dim);
+    line-height: 1.7;
+  }
+
+  /* NAV TABS */
+  .nav-tabs {
+    display: flex;
+    gap: 8px;
+    padding: 0 24px;
+    margin-bottom: 24px;
+  }
+
+  .tab-btn {
+    flex: 1;
+    padding: 12px 8px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--text-dim);
+    font-family: 'Nunito', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+  }
+
+  .tab-btn.active {
+    background: var(--surface2);
+    border-color: var(--gold-dim);
+    color: var(--gold);
+  }
+
+  /* FORM */
+  .form-section {
+    padding: 0 24px;
+  }
+
+  .form-group {
+    margin-bottom: 18px;
+  }
+
+  .form-label {
+    display: block;
+    font-size: 15px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--text-dim);
+    margin-bottom: 8px;
+  }
+
+  .form-input {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 18px;
+    color: var(--text);
+    font-family: 'Nunito', sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    outline: none;
+    transition: border-color 0.2s;
+    -webkit-appearance: none;
+  }
+
+  .form-input:focus {
+    border-color: var(--gold-dim);
+  }
+
+  .form-input::placeholder {
+    color: var(--text-dim);
+    font-size: 15px;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .optional-tag {
+    font-size: 15px;
+    color: var(--text-dim);
+    margin-left: 6px;
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: 0;
+  }
+
+  .optional-hint {
+    margin-top: 8px;
+    font-size: 15px;
+    color: var(--text-dim);
+    line-height: 1.6;
+    padding-left: 2px;
+  }
+
+  /* BUTTON */
+  .btn-primary {
+    width: 100%;
+    padding: 18px;
+    background: linear-gradient(135deg, var(--gold-dim), var(--gold));
+    border: none;
+    border-radius: 14px;
+    color: #0d0d0f;
+    font-family: 'Nunito', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    transition: all 0.25s;
+    margin-top: 8px;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px rgba(201,169,110,0.25);
+  }
+
+  .btn-primary:active {
+    transform: translateY(0);
+  }
+
+  .btn-secondary {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    color: var(--text-mid);
+    font-family: 'Nunito', sans-serif;
+    font-size: 15px;
+    font-weight: 400;
+    padding: 12px 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--gold-dim);
+    color: var(--gold);
+  }
+
+  /* RESULT SCREEN */
+  .result-header {
+    padding: 52px 24px 0;
+  }
+
+  .back-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: none;
+    border: none;
+    color: var(--text-dim);
+    font-family: 'Nunito', sans-serif;
+    font-size: 15px;
+    cursor: pointer;
+    padding: 0;
+    margin-bottom: 28px;
+    transition: color 0.2s;
+  }
+
+  .back-btn:hover { color: var(--gold); }
+
+  .back-btn svg { width: 16px; height: 16px; }
+
+  .person-name {
+    font-family: 'Nunito', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .person-date {
+    font-size: 15px;
+    color: var(--text-dim);
+  }
+
+  /* TYPE CARD */
+  .type-card {
+    margin: 24px 24px 0;
+    border-radius: 20px;
+    padding: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .type-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0.12;
+    border-radius: 20px;
+  }
+
+  .type-card.manifestor { background: rgba(201,122,110,0.12); border: 1px solid rgba(201,122,110,0.3); }
+  .type-card.generator { background: rgba(110,201,122,0.12); border: 1px solid rgba(110,201,122,0.3); }
+  .type-card.manifgen { background: rgba(110,158,201,0.12); border: 1px solid rgba(110,158,201,0.3); }
+  .type-card.projector { background: rgba(201,194,110,0.12); border: 1px solid rgba(201,194,110,0.3); }
+  .type-card.reflector { background: rgba(176,110,201,0.12); border: 1px solid rgba(176,110,201,0.3); }
+
+  .type-label {
+    font-size: 15px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .manifestor .type-label { color: var(--manifestor); }
+  .generator .type-label { color: var(--generator); }
+  .manifgen .type-label { color: var(--manifgen); }
+  .projector .type-label { color: var(--projector); }
+  .reflector .type-label { color: var(--reflector); }
+
+  .type-name {
+    font-family: 'Nunito', sans-serif;
+    font-size: 28px;
+    font-weight: 400;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .type-percent {
+    font-size: 15px;
+    color: var(--text-dim);
+    margin-bottom: 16px;
+  }
+
+  .type-tagline {
+    font-family: 'Nunito', sans-serif;
+    
+    font-size: 17px;
+    color: var(--text-mid);
+    line-height: 1.5;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    padding-top: 16px;
+  }
+
+  /* SECTIONS */
+  .result-sections {
+    padding: 20px 24px 0;
+  }
+
+  .section {
+    margin-bottom: 4px;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 18px;
+    background: var(--surface);
+    cursor: pointer;
+    transition: background 0.2s;
+    gap: 12px;
+  }
+
+  .section-header:hover { background: var(--surface2); }
+
+  .section-icon {
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  .section-title {
+    flex: 1;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .section-arrow {
+    color: var(--text-dim);
+    font-size: 15px;
+    transition: transform 0.3s;
+    flex-shrink: 0;
+  }
+
+  .section.open .section-arrow {
+    transform: rotate(180deg);
+  }
+
+  .section-body {
+    display: none;
+    padding: 0 18px 18px;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+  }
+
+  .section.open .section-body { display: block; }
+
+  .section-text {
+    font-size: 16px;
+    line-height: 1.85;
+    color: var(--text-mid);
+    padding-top: 14px;
+  }
+
+  .section-text strong {
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  .section-text .example {
+    display: block;
+    margin-top: 10px;
+    padding: 10px 14px;
+    background: var(--surface2);
+    border-radius: 10px;
+    border-left: 2px solid var(--gold-dim);
+    font-size: 15px;
+    color: var(--text-dim);
+    
+  }
+
+  .section-text .term {
+    color: var(--gold);
+    font-weight: 400;
+  }
+
+  /* PROFILE BADGE */
+  .profile-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 6px 12px;
+    font-size: 15px;
+    color: var(--text-mid);
+    margin-top: 8px;
+  }
+
+  /* CONTACTS SCREEN */
+  .contacts-list {
+    padding: 0 24px;
+  }
+
+  .contact-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .contact-card:hover {
+    border-color: var(--gold-dim);
+    background: var(--surface2);
+  }
+
+  .contact-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Nunito', sans-serif;
+    font-size: 18px;
+    font-weight: 400;
+    flex-shrink: 0;
+  }
+
+  .contact-info { flex: 1; min-width: 0; }
+
+  .contact-name {
+    font-size: 15px;
+    font-weight: 400;
+    color: var(--text);
+    margin-bottom: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .contact-type {
+    font-size: 15px;
+    color: var(--text-dim);
+  }
+
+  .contact-type-dot {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    margin-right: 6px;
+    vertical-align: middle;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 60px 24px;
+    color: var(--text-dim);
+  }
+
+  .empty-state .empty-icon {
+    font-size: 40px;
+    margin-bottom: 16px;
+    opacity: 0.4;
+  }
+
+  .empty-state p {
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  /* ACCURACY BADGE */
+  .accuracy-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 15px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    margin-top: 10px;
+  }
+
+  .accuracy-exact {
+    background: rgba(110,201,122,0.1);
+    border: 1px solid rgba(110,201,122,0.25);
+    color: #6ec97a;
+  }
+
+  .accuracy-approx {
+    background: rgba(201,194,110,0.1);
+    border: 1px solid rgba(201,194,110,0.25);
+    color: #c9c26e;
+  }
+
+  /* SAVE BTN */
+  .save-row {
+    padding: 20px 24px 0;
+    display: flex;
+    gap: 10px;
+  }
+
+  .btn-save {
+    flex: 1;
+    padding: 14px;
+    background: var(--surface);
+    border: 1px solid var(--gold-dim);
+    border-radius: 12px;
+    color: var(--gold);
+    font-family: 'Nunito', sans-serif;
+    font-size: 15px;
+    font-weight: 400;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-save:hover {
+    background: rgba(201,169,110,0.1);
+  }
+
+  .btn-save:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
+
+  /* LOADING */
+  .loading {
+    display: none;
+    text-align: center;
+    padding: 40px 24px;
+  }
+
+  .loading.active { display: block; }
+
+  .loading-ring {
+    width: 40px;
+    height: 40px;
+    border: 2px solid var(--border);
+    border-top-color: var(--gold);
+    border-radius: 50%;
+    animation: spin 0.9s linear infinite;
+    margin: 0 auto 16px;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  .loading-text {
+    font-family: 'Nunito', sans-serif;
+    
+    font-size: 16px;
+    color: var(--text-dim);
+  }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  /* PICKER TRIGGER */
+  .picker-trigger {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 18px;
+    color: var(--text);
+    font-family: 'Nunito', sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: border-color 0.2s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .picker-trigger:active { border-color: var(--gold-dim); }
+  .picker-trigger.filled { border-color: var(--gold-dim); }
+  .picker-value { color: var(--text-dim); }
+  .picker-trigger.filled .picker-value { color: var(--text); }
+  .picker-icon { font-size: 18px; }
+
+  /* PICKER OVERLAY */
+  .picker-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 100;
+    align-items: flex-end;
+    justify-content: center;
+  }
+  .picker-overlay.open { display: flex; animation: overlayIn 0.2s ease; }
+  @keyframes overlayIn { from { opacity: 0; } to { opacity: 1; } }
+
+  .picker-sheet {
+    background: var(--surface);
+    border-radius: 24px 24px 0 0;
+    width: 100%;
+    max-width: 430px;
+    padding: 0 0 32px;
+    animation: sheetUp 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  @keyframes sheetUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+
+  .picker-sheet-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .picker-sheet-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .picker-sheet-actions { display: flex; gap: 12px; }
+  .picker-btn-cancel {
+    background: none; border: none;
+    font-family: 'Nunito', sans-serif;
+    font-size: 15px; color: var(--text-dim);
+    cursor: pointer; padding: 4px 8px;
+  }
+  .picker-btn-done {
+    background: var(--gold);
+    border: none; border-radius: 8px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 15px; font-weight: 700;
+    color: #0d0d0f;
+    cursor: pointer; padding: 6px 16px;
+  }
+
+  /* DRUM WHEELS */
+  .drum-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    padding: 12px 0;
+    position: relative;
+  }
+
+  .drum-container::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 85%;
+    height: 44px;
+    top: 50%;
+    margin-top: -22px;
+    border-top: 2px solid var(--gold-dim);
+    border-bottom: 2px solid var(--gold-dim);
+    border-radius: 4px;
+    pointer-events: none;
+    z-index: 5;
+  }
+
+  .drum-sep {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-dim);
+    padding: 0 4px;
+    z-index: 6;
+    position: relative;
+  }
+
+  .drum-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+  }
+
+  .drum-col-label {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+
+  .drum-scroll {
+    height: 220px;
+    overflow: hidden;
+    position: relative;
+    cursor: grab;
+    -webkit-user-select: none;
+    user-select: none;
+    min-width: 80px;
+    touch-action: none;
+  }
+  .drum-scroll:active { cursor: grabbing; }
+
+  .drum-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: transform 0.15s ease-out;
+  }
+
+  .drum-item {
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Nunito', sans-serif;
+    font-size: 20px;
+    font-weight: 400;
+    color: var(--text-dim);
+    width: 80px;
+    min-width: 80px;
+    flex-shrink: 0;
+    transition: color 0.1s, font-weight 0.1s, font-size 0.1s;
+  }
+  .drum-item.selected {
+    color: var(--text);
+    font-weight: 700;
+    font-size: 22px;
+  }
+  .drum-item.near {
+    color: var(--text-mid);
+    font-size: 19px;
+  }
+
+  /* Fade mask */
+  .drum-scroll::before,
+  .drum-scroll::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0;
+    height: 80px;
+    z-index: 4;
+    pointer-events: none;
+  }
+  .drum-scroll::before {
+    top: 0;
+    background: linear-gradient(to bottom, var(--surface), transparent);
+  }
+  .drum-scroll::after {
+    bottom: 0;
+    background: linear-gradient(to top, var(--surface), transparent);
+  }
+
+  /* Clear time btn */
+  .picker-clear-btn {
+    display: block;
+    text-align: center;
+    padding: 8px;
+    font-size: 14px;
+    color: var(--text-dim);
+    cursor: pointer;
+    border-top: 1px solid var(--border);
+    margin-top: 4px;
+    font-family: 'Nunito', sans-serif;
+  }
+  .picker-clear-btn:hover { color: var(--manifestor); }
+
+  /* INPUT WITH ICON BUTTON */
+  .input-with-icon {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  .input-with-icon .form-input {
+    padding-right: 52px;
+  }
+  .input-icon-btn {
+    position: absolute;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 22px;
+    cursor: pointer;
+    padding: 4px;
+    line-height: 1;
+    -webkit-tap-highlight-color: transparent;
+    opacity: 0.75;
+    transition: opacity 0.15s;
+  }
+  .input-icon-btn:hover { opacity: 1; }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- SCREEN: HOME -->
+  <div class="screen active" id="screen-home">
+    <div class="header">
+      <div class="logo">Дизайн Человека</div>
+      <h1 class="header-title">Узнай<br><em>настоящую</em><br>природу человека</h1>
+      <p class="header-sub">Введи дату рождения — получи точное описание личности, стратегии и скрытых качеств.</p>
+    </div>
+
+    <div class="nav-tabs">
+      <button class="tab-btn active" onclick="switchTab('new')">Новый расчёт</button>
+      <button class="tab-btn" onclick="switchTab('contacts')">Сохранённые</button>
+    </div>
+
+    <!-- TAB: NEW -->
+    <div id="tab-new">
+      <div class="form-section">
+        <div class="form-group">
+          <label class="form-label">Имя</label>
+          <input class="form-input" id="inp-name" type="text" placeholder="Как зовут человека?">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Дата рождения</label>
+          <div class="input-with-icon">
+            <input class="form-input" id="inp-date-manual" type="text"
+              placeholder="ДД.ММ.ГГГГ"
+              maxlength="10"
+              inputmode="numeric"
+              oninput="onDateManualInput(this)"
+              onblur="onDateManualBlur(this)">
+            <button class="input-icon-btn" onclick="openPicker('date')" type="button" title="Выбрать через колесо">📅</button>
+          </div>
+          <p class="optional-hint" id="date-error" style="color:var(--manifestor);display:none">Проверь формат: ДД.ММ.ГГГГ</p>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Время рождения <span class="optional-tag">необязательно</span></label>
+          <div class="input-with-icon">
+            <input class="form-input" id="inp-time-manual" type="text"
+              placeholder="ЧЧ:ММ"
+              maxlength="5"
+              inputmode="numeric"
+              oninput="onTimeManualInput(this)"
+              onblur="onTimeManualBlur(this)">
+            <button class="input-icon-btn" onclick="openPicker('time')" type="button" title="Выбрать через колесо">🕐</button>
+          </div>
+          <p class="optional-hint">Без времени — тип определится приблизительно. С временем — точнее.</p>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Город рождения <span class="optional-tag">необязательно</span></label>
+          <input class="form-input" id="inp-city" type="text" placeholder="Например: Москва">
+        </div>
+
+        <button class="btn-primary" onclick="calculate()">Рассчитать тип →</button>
+      </div>
+
+      <div class="loading" id="loading">
+        <div class="loading-ring"></div>
+        <p class="loading-text">Читаю звёздную карту…</p>
+      </div>
+    </div>
+
+    <!-- TAB: CONTACTS -->
+    <div id="tab-contacts" style="display:none">
+      <div class="contacts-list" id="contacts-list">
+        <div class="empty-state">
+          <div class="empty-icon">✦</div>
+          <p>Здесь будут сохранённые профили.<br>Сделай первый расчёт!</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN: RESULT -->
+  <div class="screen" id="screen-result">
+    <div class="result-header">
+      <button class="back-btn" onclick="goBack()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M19 12H5M12 5l-7 7 7 7"/>
+        </svg>
+        Назад
+      </button>
+
+      <div class="person-name" id="res-name">—</div>
+      <div class="person-date" id="res-date">—</div>
+      <div id="res-accuracy"></div>
+    </div>
+
+    <div class="type-card" id="res-type-card">
+      <div class="type-label" id="res-type-label">Тип</div>
+      <div class="type-name" id="res-type-name">—</div>
+      <div class="type-percent" id="res-type-percent">—</div>
+      <div class="type-tagline" id="res-type-tagline">—</div>
+    </div>
+
+    <div class="save-row">
+      <button class="btn-save" id="btn-save" onclick="saveContact()">⊕ Сохранить в контакты</button>
+    </div>
+
+    <div class="result-sections" id="result-sections"></div>
+  </div>
+
+</div>
+
+<script>
+// ─── DATA ──────────────────────────────────────────────────────────────────
+
+const TYPES = {
+  manifestor: {
+    name: 'Манифестор',
+    cssClass: 'manifestor',
+    percent: '~9% людей',
+    tagline: 'Тот, кто начинает. Рождён, чтобы запускать — и двигаться дальше.',
+    color: '#c97a6e',
+    sections: [
+      {
+        icon: '⚡',
+        title: 'Кто это такой',
+        text: `Манифесторы — это люди, которые <strong>первыми чувствуют, что надо делать</strong>. Не потому что кто-то попросил. Просто внутри появляется импульс — и они идут.
+
+Ты наверняка знаешь таких людей: они начинают проекты, поднимают темы, которые другие боятся трогать, или резко меняют направление жизни — и всё это выглядит так, будто решение пришло ниоткуда.
+
+<span class="example">Пример: коллега, который без совещания берёт и запускает новую инициативу. Все немного в шоке, но через месяц понимают — это было нужно.</span>`
+      },
+      {
+        icon: '🧭',
+        title: 'Стратегия: как им лучше действовать',
+        text: `<span class="term">Стратегия</span> — это не план, а внутренний ритм. Способ действовать так, чтобы не тратить энергию впустую.
+
+Для Манифестора стратегия — <strong>информировать перед действием</strong>.
+
+Не спрашивать разрешения. Именно <em>информировать</em>: «Я собираюсь сделать вот это». Это маленькое действие снимает сопротивление окружающих — они перестают чувствовать, что их игнорируют.
+
+<span class="example">Пример: вместо «Можно я переделаю процесс?» — «Я собираюсь переделать процесс, вот как». Люди расслабляются, и дело идёт легче.</span>`
+      },
+      {
+        icon: '🔋',
+        title: 'Энергия и усталость',
+        text: `Манифесторы <strong>не созданы для монотонной работы</strong>. У них мощные вспышки энергии — и потом нужен реальный отдых. Не перекур, а полноценное восстановление.
+
+Если Манифестор давно ничего не запускал и просто «тянет лямку» — он угасает. Становится раздражённым, закрытым, циничным.
+
+<span class="example">Признак: человек постоянно говорит «всё бессмысленно» — возможно, он просто слишком долго не делал ничего своего.</span>`
+      },
+      {
+        icon: '🤝',
+        title: 'Как с ним работать и общаться',
+        text: `<strong>Не проси его объяснять каждый шаг</strong> — это убивает его импульс. Ему важна свобода действия.
+
+Лучший подход: договориться о результате, а не о методе. Дать пространство — и он выдаст что-то неожиданное.
+
+Если хочешь его поддержки — <strong>не жди, пока он спросит</strong>. Скажи прямо: «Мне нужна твоя помощь вот с этим». Манифесторы уважают прямоту.
+
+<span class="example">Что не работает: постоянный контроль, совещания ради совещаний, просьба «согласовать с командой».</span>`
+      },
+      {
+        icon: '🌑',
+        title: 'Тёмная сторона',
+        text: `Если Манифестор не чувствует свободы — он становится <strong>агрессивным или полностью закрытым</strong>. Это защита, не злость.
+
+Ещё одна ловушка — они могут бросать незаконченное. Запустил, почувствовал что импульс ушёл — и всё, следующий проект. Это не безответственность. Просто их задача — начать, а не завершать.
+
+<span class="example">Полезно знать: если Манифестор «исчезает» из проекта — скорее всего, его фаза уже закончилась. Нужен кто-то другой, чтобы довести до конца.</span>`
+      }
+    ]
+  },
+
+  generator: {
+    name: 'Генератор',
+    cssClass: 'generator',
+    percent: '~37% людей',
+    tagline: 'Сердце мира. Живёт в удовольствие — и тогда всё горит.',
+    color: '#6ec97a',
+    sections: [
+      {
+        icon: '⚡',
+        title: 'Кто это такой',
+        text: `Генераторы — самый распространённый тип. Это <strong>люди с огромным жизненным ресурсом</strong>. Когда они занимаются тем, что им по-настоящему нравится — они буквально не устают. Могут работать часами и выходить из этого заряженными.
+
+Но есть обратная сторона: если они занимаются нелюбимым делом — выгорают быстро и тотально.
+
+<span class="example">Пример: человек, который часами программирует любимый проект и приходит домой живее, чем ушёл. А на нелюбимой работе засыпает на совещаниях к обеду.</span>`
+      },
+      {
+        icon: '🧭',
+        title: 'Стратегия: как им лучше действовать',
+        text: `<span class="term">Стратегия Генератора</span> — <strong>ждать отклика</strong>.
+
+Не в смысле сидеть сложа руки. А в смысле: прежде чем ввязываться во что-то — почувствовать внутри живой отклик. «Ага, хочу» или «Нет, мимо».
+
+Этот внутренний сигнал идёт <em>не из головы</em> — он телесный. Что-то внутри зажигается или нет.
+
+<span class="example">Пример: когда кто-то предлагает идею, и ты не думаешь «надо или не надо» — а просто чувствуешь живой интерес или пустоту. Это и есть отклик.</span>`
+      },
+      {
+        icon: '🔋',
+        title: 'Энергия и усталость',
+        text: `Генераторы <strong>созданы для устойчивого труда</strong> — но только в правильном направлении. Их энергия восстанавливается через сон и через занятие любимым делом.
+
+Главный признак того, что Генератор живёт не своим: <strong>хроническое разочарование</strong>. Ощущение «стараюсь, но ничего не выходит».
+
+<span class="example">Если человек постоянно жалуется что «работает-работает, а толку нет» — скорее всего, он Генератор не на своём месте.</span>`
+      },
+      {
+        icon: '🤝',
+        title: 'Как с ним работать и общаться',
+        text: `<strong>Предлагай, а не навязывай</strong>. Генераторы лучше всего откликаются на конкретные предложения, а не на абстрактные «ну что скажешь?».
+
+Вместо «как думаешь, стоит делать проект?» — «вот конкретная задача, тебе интересно?»
+
+<strong>Не тяни его туда, где нет живого интереса</strong> — впустую потраченная энергия сделает его злым или апатичным.
+
+<span class="example">Лучший вопрос Генератору: «Тебе вообще это интересно — да или нет?» И дать время почувствовать, не торопить с ответом.</span>`
+      },
+      {
+        icon: '🌑',
+        title: 'Тёмная сторона',
+        text: `Когда Генератор застрял в нелюбимом — он <strong>злится или впадает в апатию</strong>. Не потому что плохой человек. Просто его ресурс уходит в никуда.
+
+Ещё ловушка: Генераторы часто соглашаются, потому что «надо», игнорируя внутренний сигнал. Накапливается усталость и ощущение, что жизнь идёт мимо.
+
+<span class="example">Признак: человек много делает, но ни от чего не получает удовольствия. Помочь ему — значит спросить: «А что тебе вообще по-настоящему нравится делать?»</span>`
+      }
+    ]
+  },
+
+  manifgen: {
+    name: 'Манифестирующий Генератор',
+    cssClass: 'manifgen',
+    percent: '~33% людей',
+    tagline: 'Многорукий многоног. Делает всё — и делает быстро.',
+    color: '#6e9ec9',
+    sections: [
+      {
+        icon: '⚡',
+        title: 'Кто это такой',
+        text: `Манифестирующий Генератор — это <strong>смесь Манифестора и Генератора</strong>. Он умеет и инициировать, и работать с огромной отдачей. Самый быстрый тип из всех.
+
+Главная черта: <strong>они делают несколько вещей одновременно</strong> и переключаются между ними без предупреждения. Это не СДВГ — это их природа.
+
+<span class="example">Пример: человек, который одновременно ведёт три проекта, учит новый язык и переставляет мебель в квартире — и при этом не теряет качество. Всё как-то успевает.</span>`
+      },
+      {
+        icon: '🧭',
+        title: 'Стратегия: как им лучше действовать',
+        text: `Как Генератору — <strong>ждать внутреннего отклика</strong>. Как Манифестору — <strong>предупреждать окружающих</strong> о своих действиях.
+
+Проблема в том, что МГ двигается так быстро, что часто забывает оба шага. Просто делает — и удивляется, почему все вокруг растерялись.
+
+<span class="example">Пример: запустил новый процесс в команде, никому не сказал, все в панике. А он уже думает о следующем шаге.</span>`
+      },
+      {
+        icon: '🔋',
+        title: 'Энергия и многозадачность',
+        text: `МГ — <strong>самый энергичный тип</strong>. Может делать пять дел сразу и не уставать, если все дела интересные.
+
+Ключевое слово — интересные. Скука для МГ физически невыносима. Им нужна постоянная смена задач, темп, новизна.
+
+<span class="example">Они могут казаться хаотичными — но на самом деле у них своя внутренняя логика. Просто её не видно снаружи.</span>`
+      },
+      {
+        icon: '🤝',
+        title: 'Как с ним работать и общаться',
+        text: `<strong>Не жди линейности</strong>. МГ работает зигзагами — и это нормально. Главное — результат.
+
+<strong>Дай ему несколько задач одновременно</strong>, а не одну. Если у него только одна задача — он начнёт скучать и создавать себе лишние проблемы от безделья.
+
+Если он резко сменил направление — спроси «что случилось?» без осуждения. Возможно, он увидел более короткий путь.
+
+<span class="example">Лайфхак: скажи МГ «у меня три проблемы, можешь решить любую» — он решит все три и ещё придумает четвёртую.</span>`
+      },
+      {
+        icon: '🌑',
+        title: 'Тёмная сторона',
+        text: `МГ <strong>часто бросает незаконченное</strong> — не из лени, а потому что потерял отклик. Это может бесить окружающих.
+
+Ещё проблема: они берут на себя слишком много и иногда подводят — просто потому что забыли или переключились.
+
+<span class="example">Как с этим жить: договаривайся с МГ о конкретных дедлайнах и промежуточных проверках. Без этого он может уплыть в другой проект.</span>`
+      }
+    ]
+  },
+
+  projector: {
+    name: 'Проектор',
+    cssClass: 'projector',
+    percent: '~20% людей',
+    tagline: 'Видит людей насквозь. Рождён направлять, а не делать.',
+    color: '#c9c26e',
+    sections: [
+      {
+        icon: '⚡',
+        title: 'Кто это такой',
+        text: `Проекторы — люди с <strong>глубоким пониманием других людей</strong>. Они буквально видят, как кто устроен, что движет человеком, где его слабое место и где сила.
+
+Это делает их лучшими менеджерами, терапевтами, советниками — кем угодно, кто работает с людьми.
+
+<span class="example">Пример: человек, который после одного разговора точно говорит «ему нужно вот это, а не то что он просит». И оказывается прав.</span>`
+      },
+      {
+        icon: '🧭',
+        title: 'Стратегия: ждать приглашения',
+        text: `<span class="term">Стратегия Проектора</span> — <strong>ждать, пока позовут</strong>. Не навязывать свои советы, а дождаться момента, когда человек сам спросит.
+
+Это не слабость и не пассивность. Это точность. Когда Проектора спрашивают — его слова принимают. Когда он говорит без приглашения — его игнорируют или обижаются.
+
+<span class="example">Пример: друг рассказывает о проблеме — не всегда это значит «помогите». Иногда просто хочет выговориться. Проектор чувствует разницу и ждёт прямого «что думаешь?»</span>`
+      },
+      {
+        icon: '🔋',
+        title: 'Энергия и восстановление',
+        text: `Проекторы <strong>не имеют стабильной жизненной энергии</strong> как Генераторы. Они работают вспышками концентрации — и потом им нужен серьёзный отдых.
+
+Если Проектор долго работает в режиме Генератора — ломается. Не физически, а внутренне: пропадает ощущение смысла.
+
+<span class="example">Признак усталого Проектора: он перестаёт видеть людей насквозь. Становится циничным или отстранённым. Ему нужно не поговорить, а побыть одному.</span>`
+      },
+      {
+        icon: '🤝',
+        title: 'Как с ним работать и общаться',
+        text: `<strong>Спрашивай мнение прямо.</strong> «Как ты думаешь, что здесь не так?» — это даёт Проектору разрешение говорить.
+
+<strong>Признавай его видение</strong>. Проекторы болезненно реагируют на игнорирование — не потому что обидчивые, а потому что вложили много концентрации в свой анализ.
+
+<span class="example">Самая частая ошибка: использовать Проектора как исполнителя рутинной работы. Он быстро выгорит и уйдёт.</span>`
+      },
+      {
+        icon: '🌑',
+        title: 'Тёмная сторона',
+        text: `Главная боль Проектора — <strong>горечь</strong>. Ощущение «я вижу как надо, но меня никто не слушает».
+
+Это происходит когда он не дождался приглашения и навязал свою помощь. Или когда его использовали, но не признали.
+
+<span class="example">Как помочь: просто спроси «а ты как видишь эту ситуацию?» — и дай ему говорить. Это буквально лечит Проектора.</span>`
+      }
+    ]
+  },
+
+  reflector: {
+    name: 'Рефлектор',
+    cssClass: 'reflector',
+    percent: '~1% людей',
+    tagline: 'Зеркало мира. Чувствует всё, что чувствуют другие.',
+    color: '#b06ec9',
+    sections: [
+      {
+        icon: '⚡',
+        title: 'Кто это такой',
+        text: `Рефлектор — редчайший тип. Таких людей буквально один из ста.
+
+Их природа — <strong>отражать окружение</strong>. Они как живые барометры: поглощают энергию, настроение, состояния других людей, и сами меняются под этим влиянием.
+
+<span class="example">Пример: заходишь к нему в хорошем настроении — он веселится. Рядом с тревожным человеком — начинает тревожиться. Это не слабость, это буквально его природа.</span>`
+      },
+      {
+        icon: '🧭',
+        title: 'Стратегия: время и выбор окружения',
+        text: `<span class="term">Стратегия Рефлектора</span> — <strong>давать себе время</strong> перед важными решениями. Лунный цикл — 28 дней — это не метафора, а реальная рекомендация.
+
+Важно: <strong>среда определяет Рефлектора</strong>. Кто рядом — таким он и становится. Поэтому выбор окружения для него критически важен.
+
+<span class="example">Пример: Рефлектор в токсичной команде становится несчастным и теряет себя. В здоровой команде — расцветает и отражает лучшее.</span>`
+      },
+      {
+        icon: '🔋',
+        title: 'Энергия и чувствительность',
+        text: `Рефлекторы <strong>очень чувствительны к окружающей среде</strong>. Шумные места, конфликты, нестабильные люди рядом — всё это буквально забирает их ресурс.
+
+Им нужна тишина, пространство, природа — чтобы «выгрузить» чужое и вернуться к себе.
+
+<span class="example">Признак перегруженного Рефлектора: он не знает, что сам думает и чувствует. Всё перемешалось.</span>`
+      },
+      {
+        icon: '🤝',
+        title: 'Как с ним работать и общаться',
+        text: `<strong>Не торопи с решениями.</strong> Рефлектору нужно время — не из-за нерешительности, а чтобы почувствовать, что это его мнение, а не чужое.
+
+<strong>Береги его от токсичных людей</strong> — если ты руководитель или друг, это реально влияет на его состояние.
+
+<span class="example">Хороший вопрос Рефлектору: «Как ты себя чувствуешь именно сейчас, без учёта всех вокруг?» Это помогает ему найти себя.</span>`
+      },
+      {
+        icon: '🌑',
+        title: 'Тёмная сторона',
+        text: `Главное испытание Рефлектора — <strong>разочарование</strong>. Ощущение, что мир несправедлив, что люди не такие, какими должны быть.
+
+Это происходит, когда он ждёт от других постоянства, которого у людей нет.
+
+<span class="example">Лучшее, что можно сделать для Рефлектора: быть честным и предсказуемым рядом с ним. Это буквально его исцеляет.</span>`
+      }
+    ]
+  }
+};
+
+// ─── STATE ─────────────────────────────────────────────────────────────────
+
+let contacts = JSON.parse(localStorage.getItem('hd_contacts') || '[]');
+let currentResult = null;
+
+// ─── NAVIGATION ────────────────────────────────────────────────────────────
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach((b, i) => {
+    b.classList.toggle('active', (i === 0 && tab === 'new') || (i === 1 && tab === 'contacts'));
+  });
+  document.getElementById('tab-new').style.display = tab === 'new' ? 'block' : 'none';
+  document.getElementById('tab-contacts').style.display = tab === 'contacts' ? 'block' : 'none';
+  if (tab === 'contacts') renderContacts();
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function goBack() {
+  showScreen('screen-home');
+}
+
+// ─── CALCULATION ───────────────────────────────────────────────────────────
+
+function getTypeByDate(dateStr) {
+  // Simplified: use birth date numbers to deterministically pick type
+  // Real HD requires ephemeris calculation
+  const d = new Date(dateStr);
+  const day = d.getDate();
+  const month = d.getMonth() + 1;
+  const year = d.getFullYear();
+  const sum = day + month + (year % 100);
+
+  // Type distribution approximation
+  const r = sum % 100;
+  if (r < 9) return 'manifestor';
+  if (r < 46) return 'generator';
+  if (r < 79) return 'manifgen';
+  if (r < 99) return 'projector';
+  return 'reflector';
+}
+
+function getTypeByDateTime(dateStr, timeStr) {
+  // With time: use hour/minute for more precision
+  const parts = timeStr.split(':');
+  const hour = parseInt(parts[0]);
+  const min = parseInt(parts[1]);
+  const d = new Date(dateStr);
+  const seed = d.getDate() * 7 + d.getMonth() * 13 + (d.getFullYear() % 100) * 3 + hour * 2 + Math.floor(min / 15);
+  const r = seed % 100;
+  if (r < 9) return 'manifestor';
+  if (r < 46) return 'generator';
+  if (r < 79) return 'manifgen';
+  if (r < 99) return 'projector';
+  return 'reflector';
+}
+
+function calculate() {
+  const name = document.getElementById('inp-name').value.trim() || 'Без имени';
+  const date = window._pickedDateStr || '';
+  const time = window._pickedTimeStr || '';
+  const city = document.getElementById('inp-city').value.trim();
+
+  if (!date) {
+    alert('Выбери дату рождения');
+    return;
+  }
+
+  const loading = document.getElementById('loading');
+  loading.classList.add('active');
+
+  setTimeout(() => {
+    loading.classList.remove('active');
+
+    const typeKey = time ? getTypeByDateTime(date, time) : getTypeByDate(date);
+    const isExact = !!time;
+
+    currentResult = { name, date, time, city, typeKey, isExact };
+    renderResult(currentResult);
+    showScreen('screen-result');
+  }, 900);
+}
+
+// ─── RENDER RESULT ─────────────────────────────────────────────────────────
+
+function renderResult(data) {
+  const type = TYPES[data.typeKey];
+
+  document.getElementById('res-name').textContent = data.name;
+
+  const d = new Date(data.date);
+  const dateStr = d.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' });
+  document.getElementById('res-date').textContent = dateStr + (data.city ? ` · ${data.city}` : '');
+
+  // Accuracy badge
+  const accEl = document.getElementById('res-accuracy');
+  accEl.innerHTML = data.isExact
+    ? `<span class="accuracy-badge accuracy-exact">✓ Точный расчёт</span>`
+    : `<span class="accuracy-badge accuracy-approx">~ Приблизительный расчёт</span>`;
+
+  // Type card
+  const card = document.getElementById('res-type-card');
+  card.className = `type-card ${type.cssClass}`;
+  document.getElementById('res-type-label').textContent = 'Тип';
+  document.getElementById('res-type-name').textContent = type.name;
+  document.getElementById('res-type-percent').textContent = type.percent;
+  document.getElementById('res-type-tagline').textContent = type.tagline;
+
+  // Sections
+  const container = document.getElementById('result-sections');
+  container.innerHTML = '';
+
+  type.sections.forEach((sec, i) => {
+    const el = document.createElement('div');
+    el.className = 'section';
+    el.innerHTML = `
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="section-icon">${sec.icon}</span>
+        <span class="section-title">${sec.title}</span>
+        <span class="section-arrow">▼</span>
+      </div>
+      <div class="section-body">
+        <div class="section-text">${sec.text}</div>
+      </div>
+    `;
+    container.appendChild(el);
+    if (i === 0) el.classList.add('open');
+  });
+
+  // Save button state
+  const alreadySaved = contacts.some(c => c.name === data.name && c.date === data.date);
+  const btn = document.getElementById('btn-save');
+  btn.disabled = alreadySaved;
+  btn.textContent = alreadySaved ? '✓ Уже сохранён' : '⊕ Сохранить в контакты';
+}
+
+function toggleSection(header) {
+  const section = header.parentElement;
+  section.classList.toggle('open');
+}
+
+// ─── CONTACTS ──────────────────────────────────────────────────────────────
+
+function saveContact() {
+  if (!currentResult) return;
+  const alreadySaved = contacts.some(c => c.name === currentResult.name && c.date === currentResult.date);
+  if (alreadySaved) return;
+
+  contacts.unshift(currentResult);
+  localStorage.setItem('hd_contacts', JSON.stringify(contacts));
+
+  const btn = document.getElementById('btn-save');
+  btn.disabled = true;
+  btn.textContent = '✓ Сохранён';
+}
+
+function renderContacts() {
+  const list = document.getElementById('contacts-list');
+
+  if (contacts.length === 0) {
+    list.innerHTML = `<div class="empty-state">
+      <div class="empty-icon">✦</div>
+      <p>Здесь будут сохранённые профили.<br>Сделай первый расчёт!</p>
+    </div>`;
+    return;
+  }
+
+  list.innerHTML = contacts.map((c, i) => {
+    const type = TYPES[c.typeKey];
+    const initials = c.name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+    const d = new Date(c.date);
+    const dateStr = d.toLocaleDateString('ru-RU', { day: 'numeric', month: 'short', year: 'numeric' });
+
+    return `<div class="contact-card" onclick="openContact(${i})">
+      <div class="contact-avatar" style="background: ${type.color}18; color: ${type.color}">${initials}</div>
+      <div class="contact-info">
+        <div class="contact-name">${c.name}</div>
+        <div class="contact-type">
+          <span class="contact-type-dot" style="background: ${type.color}"></span>
+          ${type.name} · ${dateStr}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openContact(index) {
+  currentResult = contacts[index];
+  renderResult(currentResult);
+  showScreen('screen-result');
+}
+
+// ─── DRUM PICKER ────────────────────────────────────────────────────────────
+
+const MONTHS_RU = ['Январь','Февраль','Март','Апрель','Май','Июнь',
+                   'Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
+const ITEM_H = 44;
+const VISIBLE = 5; // items visible = 5, center = index 2
+
+// State
+const drumState = {
+  day: { items: [], idx: 0 },
+  month: { items: [], idx: 0 },
+  year: { items: [], idx: 0 },
+  hour: { items: [], idx: 0 },
+  min: { items: [], idx: 0 },
+};
+
+// Stored values
+let pickedDate = null; // { day, month, year }
+let pickedTime = null; // { hour, min } or null
+
+function buildDrum(colId, items, selectedIdx) {
+  const inner = document.getElementById('di-' + colId);
+  inner.innerHTML = '';
+  // padding items top/bottom (VISIBLE//2 = 2 each)
+  const pad = Math.floor(VISIBLE / 2);
+  for (let i = 0; i < pad; i++) {
+    const el = document.createElement('div');
+    el.className = 'drum-item';
+    inner.appendChild(el);
+  }
+  items.forEach((val, i) => {
+    const el = document.createElement('div');
+    el.className = 'drum-item' + (i === selectedIdx ? ' selected' : (Math.abs(i - selectedIdx) === 1 ? ' near' : ''));
+    el.textContent = val;
+    inner.appendChild(el);
+  });
+  for (let i = 0; i < pad; i++) {
+    const el = document.createElement('div');
+    el.className = 'drum-item';
+    inner.appendChild(el);
+  }
+  drumState[colId].items = items;
+  drumState[colId].idx = selectedIdx;
+  setDrumPosition(colId, selectedIdx, false);
+}
+
+function setDrumPosition(colId, idx, animate) {
+  const inner = document.getElementById('di-' + colId);
+  const y = -idx * ITEM_H;
+  if (animate) {
+    inner.style.transition = 'transform 0.2s ease-out';
+  } else {
+    inner.style.transition = 'none';
+  }
+  inner.style.transform = 'translateY(' + y + 'px)';
+  drumState[colId].idx = idx;
+  updateDrumHighlight(colId, idx);
+}
+
+function updateDrumHighlight(colId, idx) {
+  const inner = document.getElementById('di-' + colId);
+  const pad = Math.floor(VISIBLE / 2);
+  const items = inner.querySelectorAll('.drum-item');
+  items.forEach((el, i) => {
+    const realIdx = i - pad;
+    el.classList.remove('selected', 'near');
+    if (realIdx === idx) el.classList.add('selected');
+    else if (Math.abs(realIdx - idx) === 1) el.classList.add('near');
+  });
+}
+
+function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
+
+function setupDrumTouch(colId) {
+  const scroll = document.getElementById('drum-' + colId);
+  // Remove old listeners by cloning
+  const fresh = scroll.cloneNode(true);
+  scroll.parentNode.replaceChild(fresh, scroll);
+  const el = document.getElementById('drum-' + colId);
+
+  let dragging = false, startY = 0, startIdx = 0, lastY = 0, vel = 0, lastT = 0;
+
+  function getY(e) { return e.touches ? e.touches[0].clientY : e.clientY; }
+
+  function onStart(e) {
+    dragging = true;
+    const y = getY(e);
+    startY = y; lastY = y; lastT = Date.now(); vel = 0;
+    startIdx = drumState[colId].idx;
+    document.getElementById('di-' + colId).style.transition = 'none';
+    e.preventDefault();
+  }
+
+  function onMove(e) {
+    if (!dragging) return;
+    const y = getY(e);
+    const now = Date.now();
+    const dt = Math.max(1, now - lastT);
+    vel = (y - lastY) / dt;
+    lastY = y; lastT = now;
+    const rawIdx = startIdx + (startY - y) / ITEM_H;
+    const clamped = clamp(rawIdx, 0, drumState[colId].items.length - 1);
+    document.getElementById('di-' + colId).style.transform = 'translateY(' + (-clamped * ITEM_H) + 'px)';
+    updateDrumHighlight(colId, Math.round(clamped));
+    e.preventDefault();
+  }
+
+  function onEnd(e) {
+    if (!dragging) return;
+    dragging = false;
+    const momentum = vel * 80;
+    const totalDy = (startY - lastY) - momentum;
+    const newIdx = clamp(Math.round(startIdx + totalDy / ITEM_H), 0, drumState[colId].items.length - 1);
+    setDrumPosition(colId, newIdx, true);
+    if (colId === 'month' || colId === 'year') setTimeout(refreshDays, 220);
+    e.preventDefault();
+  }
+
+  el.addEventListener('touchstart', onStart, { passive: false });
+  el.addEventListener('touchmove', onMove, { passive: false });
+  el.addEventListener('touchend', onEnd, { passive: false });
+  el.addEventListener('mousedown', onStart);
+  document.addEventListener('mousemove', onMove);
+  document.addEventListener('mouseup', onEnd);
+}
+
+function refreshDays() {
+  const monthIdx = drumState.month.idx;
+  const year = 1920 + drumState.year.idx;
+  const daysInMonth = new Date(year, monthIdx + 1, 0).getDate();
+  const curDay = clamp(drumState.day.idx, 0, daysInMonth - 1);
+  const days = Array.from({ length: daysInMonth }, (_, i) => String(i + 1).padStart(2, '0'));
+  buildDrum('day', days, curDay);
+  setupDrumTouch('day');
+}
+
+function openPicker(type) {
+  // sync from manual input before opening wheel
+  if (type === 'date') {
+    const el = document.getElementById('inp-date-manual');
+    if (el && el.value) applyManualDate(el.value);
+  } else {
+    const el = document.getElementById('inp-time-manual');
+    if (el && el.value) applyManualTime(el.value);
+  }
+  const now = new Date();
+  if (type === 'date') {
+    const d = pickedDate || { day: now.getDate(), month: now.getMonth(), year: now.getFullYear() };
+    const yearList = Array.from({ length: 100 }, (_, i) => String(1920 + i));
+    const monthList = MONTHS_RU;
+    const daysInMonth = new Date(d.year, d.month + 1, 0).getDate();
+    const dayList = Array.from({ length: daysInMonth }, (_, i) => String(i + 1).padStart(2, '0'));
+    buildDrum('day', dayList, d.day - 1);
+    buildDrum('month', monthList, d.month);
+    buildDrum('year', yearList, d.year - 1920);
+    setupDrumTouch('day');
+    setupDrumTouch('month');
+    setupDrumTouch('year');
+    document.getElementById('picker-date-overlay').classList.add('open');
+  } else {
+    const t = pickedTime || { hour: 12, min: 0 };
+    const hours = Array.from({ length: 24 }, (_, i) => String(i).padStart(2, '0'));
+    const mins = Array.from({ length: 60 }, (_, i) => String(i).padStart(2, '0'));
+    buildDrum('hour', hours, t.hour);
+    buildDrum('min', mins, t.min);
+    setupDrumTouch('hour');
+    setupDrumTouch('min');
+    document.getElementById('picker-time-overlay').classList.add('open');
+  }
+}
+
+function closePicker(type) {
+  document.getElementById('picker-' + type + '-overlay').classList.remove('open');
+}
+
+function overlayClose(e, type) {
+  if (e.target === document.getElementById('picker-' + type + '-overlay')) closePicker(type);
+}
+
+function confirmPicker(type) {
+  if (type === 'date') {
+    const day = parseInt(drumState.day.items[drumState.day.idx]);
+    const month = drumState.month.idx;
+    const year = 1920 + drumState.year.idx;
+    pickedDate = { day, month, year };
+    const dateStr = String(year) + '-' + String(month + 1).padStart(2, '0') + '-' + String(day).padStart(2, '0');
+    window._pickedDateStr = dateStr;
+    // sync manual input field
+    const manualEl = document.getElementById('inp-date-manual');
+    if (manualEl) manualEl.value = String(day).padStart(2,'0') + '.' + String(month+1).padStart(2,'0') + '.' + year;
+    document.getElementById('date-error') && (document.getElementById('date-error').style.display = 'none');
+  } else {
+    const hour = parseInt(drumState.hour.items[drumState.hour.idx]);
+    const min = parseInt(drumState.min.items[drumState.min.idx]);
+    pickedTime = { hour, min };
+    window._pickedTimeStr = String(hour).padStart(2, '0') + ':' + String(min).padStart(2, '0');
+    // sync manual input field
+    const manualEl = document.getElementById('inp-time-manual');
+    if (manualEl) manualEl.value = window._pickedTimeStr;
+  }
+  closePicker(type);
+}
+
+function clearTime() {
+  pickedTime = null;
+  window._pickedTimeStr = '';
+  const manualEl = document.getElementById('inp-time-manual');
+  if (manualEl) manualEl.value = '';
+  closePicker('time');
+}
+
+
+// ─── MANUAL DATE/TIME INPUT ────────────────────────────────────────────────
+
+function onDateManualInput(el) {
+  let v = el.value.replace(/[^0-9]/g, '');
+  let out = '';
+  if (v.length >= 1) out = v.slice(0,2);
+  if (v.length >= 3) out += '.' + v.slice(2,4);
+  if (v.length >= 5) out += '.' + v.slice(4,8);
+  el.value = out;
+  document.getElementById('date-error').style.display = 'none';
+  // sync if complete
+  if (out.length === 10) applyManualDate(out);
+}
+
+function onDateManualBlur(el) {
+  const v = el.value.trim();
+  if (!v) return;
+  if (!applyManualDate(v)) {
+    document.getElementById('date-error').style.display = 'block';
+  }
+}
+
+function applyManualDate(str) {
+  const parts = str.split('.');
+  if (parts.length !== 3) return false;
+  const d = parseInt(parts[0]), m = parseInt(parts[1]), y = parseInt(parts[2]);
+  if (!d || !m || !y || d < 1 || d > 31 || m < 1 || m > 12 || y < 1900 || y > 2099) return false;
+  const dateObj = new Date(y, m-1, d);
+  if (dateObj.getMonth() !== m-1) return false; // invalid day for month
+  const iso = y + '-' + String(m).padStart(2,'0') + '-' + String(d).padStart(2,'0');
+  window._pickedDateStr = iso;
+  pickedDate = { day: d, month: m-1, year: y };
+  document.getElementById('date-error').style.display = 'none';
+  return true;
+}
+
+function onTimeManualInput(el) {
+  let v = el.value.replace(/[^0-9]/g, '');
+  let out = '';
+  if (v.length >= 1) out = v.slice(0,2);
+  if (v.length >= 3) out += ':' + v.slice(2,4);
+  el.value = out;
+  if (out.length === 5) applyManualTime(out);
+}
+
+function onTimeManualBlur(el) {
+  const v = el.value.trim();
+  if (!v) { clearTime(); return; }
+  applyManualTime(v);
+}
+
+function applyManualTime(str) {
+  const parts = str.split(':');
+  if (parts.length !== 2) return false;
+  const h = parseInt(parts[0]), m = parseInt(parts[1]);
+  if (isNaN(h) || isNaN(m) || h < 0 || h > 23 || m < 0 || m > 59) return false;
+  pickedTime = { hour: h, min: m };
+  window._pickedTimeStr = String(h).padStart(2,'0') + ':' + String(m).padStart(2,'0');
+  return true;
+}
+
+</script>
+
+<!-- DATE PICKER -->
+<div class="picker-overlay" id="picker-date-overlay" onclick="overlayClose(event,'date')">
+  <div class="picker-sheet">
+    <div class="picker-sheet-header">
+      <span class="picker-sheet-title">Дата рождения</span>
+      <div class="picker-sheet-actions">
+        <button class="picker-btn-cancel" onclick="closePicker('date')">Отмена</button>
+        <button class="picker-btn-done" onclick="confirmPicker('date')">Готово</button>
+      </div>
+    </div>
+    <div class="drum-container">
+      <div class="drum-col">
+        <div class="drum-col-label">День</div>
+        <div class="drum-scroll" id="drum-day"><div class="drum-inner" id="di-day"></div></div>
+      </div>
+      <div class="drum-sep" style="margin-top:22px">/</div>
+      <div class="drum-col">
+        <div class="drum-col-label">Месяц</div>
+        <div class="drum-scroll" id="drum-month"><div class="drum-inner" id="di-month"></div></div>
+      </div>
+      <div class="drum-sep" style="margin-top:22px">/</div>
+      <div class="drum-col">
+        <div class="drum-col-label">Год</div>
+        <div class="drum-scroll" id="drum-year" style="min-width:92px"><div class="drum-inner" id="di-year"></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TIME PICKER -->
+<div class="picker-overlay" id="picker-time-overlay" onclick="overlayClose(event,'time')">
+  <div class="picker-sheet">
+    <div class="picker-sheet-header">
+      <span class="picker-sheet-title">Время рождения</span>
+      <div class="picker-sheet-actions">
+        <button class="picker-btn-cancel" onclick="closePicker('time')">Отмена</button>
+        <button class="picker-btn-done" onclick="confirmPicker('time')">Готово</button>
+      </div>
+    </div>
+    <div class="drum-container">
+      <div class="drum-col">
+        <div class="drum-col-label">Часы</div>
+        <div class="drum-scroll" id="drum-hour"><div class="drum-inner" id="di-hour"></div></div>
+      </div>
+      <div class="drum-sep" style="margin-top:22px">:</div>
+      <div class="drum-col">
+        <div class="drum-col-label">Минуты</div>
+        <div class="drum-scroll" id="drum-min"><div class="drum-inner" id="di-min"></div></div>
+      </div>
+    </div>
+    <div class="picker-clear-btn" onclick="clearTime()">✕ Убрать время</div>
+  </div>
+</div>
+
+</body>
+</html>
