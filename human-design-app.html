@@ -2619,6 +2619,113 @@ const CITY_MAP = {
   'бухарест': 'Bucharest, Romania', 'будапешт': 'Budapest, Hungary',
   'афины': 'Athens, Greece', 'лиссабон': 'Lisbon, Portugal',
   'монреаль': 'Montreal, Canada', 'майами': 'Miami, USA',
+  // Syria
+  'aleppo': 'Aleppo, Syria', 'алеппо': 'Aleppo, Syria', 'халеб': 'Aleppo, Syria',
+  'damascus': 'Damascus, Syria', 'дамаск': 'Damascus, Syria',
+  'homs': 'Homs, Syria', 'хомс': 'Homs, Syria',
+  'latakia': 'Latakia, Syria', 'латакия': 'Latakia, Syria',
+  // Turkey
+  'ankara': 'Ankara, Turkey', 'анкара': 'Ankara, Turkey',
+  'izmir': 'Izmir, Turkey', 'измир': 'Izmir, Turkey',
+  'antalya': 'Antalya, Turkey', 'анталья': 'Antalya, Turkey',
+  'bursa': 'Bursa, Turkey', 'бурса': 'Bursa, Turkey',
+  // Egypt
+  'cairo': 'Cairo, Egypt', 'каир': 'Cairo, Egypt',
+  'alexandria': 'Alexandria, Egypt', 'александрия': 'Alexandria, Egypt',
+  // USA cities
+  'new york': 'New York, USA', 'los angeles': 'Los Angeles, USA',
+  'chicago': 'Chicago, USA', 'houston': 'Houston, USA',
+  'phoenix': 'Phoenix, USA', 'philadelphia': 'Philadelphia, USA',
+  'san antonio': 'San Antonio, USA', 'san diego': 'San Diego, USA',
+  'dallas': 'Dallas, USA', 'san jose': 'San Jose, USA',
+  'austin': 'Austin, USA', 'seattle': 'Seattle, USA',
+  'denver': 'Denver, USA', 'boston': 'Boston, USA',
+  'atlanta': 'Atlanta, USA', 'miami': 'Miami, USA',
+  'las vegas': 'Las Vegas, USA', 'portland': 'Portland, USA',
+  // UK
+  'london': 'London, UK', 'manchester': 'Manchester, UK',
+  'birmingham': 'Birmingham, UK', 'glasgow': 'Glasgow, UK',
+  'liverpool': 'Liverpool, UK', 'edinburgh': 'Edinburgh, UK',
+  // Canada
+  'toronto': 'Toronto, Canada', 'vancouver': 'Vancouver, Canada',
+  'montreal': 'Montreal, Canada', 'calgary': 'Calgary, Canada',
+  'ottawa': 'Ottawa, Canada', 'edmonton': 'Edmonton, Canada',
+  // Australia
+  'sydney': 'Sydney, Australia', 'melbourne': 'Melbourne, Australia',
+  'brisbane': 'Brisbane, Australia', 'perth': 'Perth, Australia',
+  // India
+  'mumbai': 'Mumbai, India', 'delhi': 'Delhi, India',
+  'bangalore': 'Bangalore, India', 'hyderabad': 'Hyderabad, India',
+  'chennai': 'Chennai, India', 'kolkata': 'Kolkata, India',
+  // China
+  'beijing': 'Beijing, China', 'shanghai': 'Shanghai, China',
+  'guangzhou': 'Guangzhou, China', 'shenzhen': 'Shenzhen, China',
+  // Japan
+  'tokyo': 'Tokyo, Japan', 'osaka': 'Osaka, Japan',
+  'kyoto': 'Kyoto, Japan', 'yokohama': 'Yokohama, Japan',
+  // South Korea
+  'seoul': 'Seoul, South Korea', 'busan': 'Busan, South Korea',
+  // Brazil
+  'sao paulo': 'Sao Paulo, Brazil', 'rio de janeiro': 'Rio de Janeiro, Brazil',
+  'brasilia': 'Brasilia, Brazil',
+  // Mexico
+  'mexico city': 'Mexico City, Mexico', 'guadalajara': 'Guadalajara, Mexico',
+  'monterrey': 'Monterrey, Mexico',
+  // Argentina
+  'buenos aires': 'Buenos Aires, Argentina',
+  // France
+  'paris': 'Paris, France', 'marseille': 'Marseille, France',
+  'lyon': 'Lyon, France', 'toulouse': 'Toulouse, France',
+  'nice': 'Nice, France', 'nantes': 'Nantes, France',
+  // Italy
+  'rome': 'Rome, Italy', 'milan': 'Milan, Italy',
+  'naples': 'Naples, Italy', 'turin': 'Turin, Italy',
+  'florence': 'Florence, Italy', 'venice': 'Venice, Italy',
+  // Spain
+  'madrid': 'Madrid, Spain', 'barcelona': 'Barcelona, Spain',
+  'valencia': 'Valencia, Spain', 'seville': 'Seville, Spain',
+  // Germany
+  'berlin': 'Berlin, Germany', 'munich': 'Munich, Germany',
+  'hamburg': 'Hamburg, Germany', 'frankfurt': 'Frankfurt, Germany',
+  'cologne': 'Cologne, Germany', 'dusseldorf': 'Dusseldorf, Germany',
+  'stuttgart': 'Stuttgart, Germany', 'dortmund': 'Dortmund, Germany',
+  // Poland
+  'warsaw': 'Warsaw, Poland', 'krakow': 'Krakow, Poland',
+  'wroclaw': 'Wroclaw, Poland', 'lodz': 'Lodz, Poland',
+  // Netherlands
+  'amsterdam': 'Amsterdam, Netherlands', 'rotterdam': 'Rotterdam, Netherlands',
+  'the hague': 'The Hague, Netherlands',
+  // Sweden
+  'stockholm': 'Stockholm, Sweden', 'gothenburg': 'Gothenburg, Sweden',
+  // Norway
+  'oslo': 'Oslo, Norway', 'bergen': 'Bergen, Norway',
+  // Denmark
+  'copenhagen': 'Copenhagen, Denmark',
+  // Finland
+  'helsinki': 'Helsinki, Finland',
+  // Switzerland
+  'zurich': 'Zurich, Switzerland', 'geneva': 'Geneva, Switzerland',
+  'bern': 'Bern, Switzerland',
+  // Austria
+  'vienna': 'Vienna, Austria', 'graz': 'Graz, Austria',
+  // Belgium
+  'brussels': 'Brussels, Belgium', 'antwerp': 'Antwerp, Belgium',
+  // Portugal
+  'lisbon': 'Lisbon, Portugal', 'porto': 'Porto, Portugal',
+  // Greece
+  'athens': 'Athens, Greece', 'thessaloniki': 'Thessaloniki, Greece',
+  // Romania
+  'bucharest': 'Bucharest, Romania', 'cluj': 'Cluj, Romania',
+  // Hungary
+  'budapest': 'Budapest, Hungary',
+  // Czech
+  'prague': 'Prague, Czech Republic', 'brno': 'Brno, Czech Republic',
+  // Serbia
+  'belgrade': 'Belgrade, Serbia',
+  // Croatia
+  'zagreb': 'Zagreb, Croatia',
+  // Bulgaria
+  'sofia': 'Sofia, Bulgaria',
 };
 
 function translateCity(city) {
@@ -2679,34 +2786,18 @@ function ruToKey(ru) {
 
 let citySearchTimer = null;
 
-async function onCityInput(el) {
+function onCityInput(el) {
   const q = el.value.trim();
-  clearTimeout(citySearchTimer);
-  
   if (q.length < 2) {
     hideCitySuggestions();
     return;
   }
-
-  // First show local results immediately
   const local = localCitySearch(q);
   if (local.length > 0) {
     showLocalSuggestions(local);
+  } else {
+    hideCitySuggestions();
   }
-
-  citySearchTimer = setTimeout(async () => {
-    try {
-      const resp = await fetch(
-        'https://nominatim.openstreetmap.org/search?q=' + encodeURIComponent(q) + '&format=json&limit=6&addressdetails=1&featuretype=city',
-        { headers: { 'Accept-Language': 'en-US,en' } }
-      );
-      if (!resp.ok) return;
-      const results = await resp.json();
-      if (results && results.length > 0) showCitySuggestions(results);
-    } catch(e) {
-      console.log('Nominatim error:', e);
-    }
-  }, 400);
 }
 
 function showCitySuggestions(results) {
@@ -2745,9 +2836,18 @@ function showLocalSuggestions(items) {
 
 function localCitySearch(q) {
   const qLower = q.toLowerCase();
-  return Object.entries(CITY_MAP).filter(([ru]) => 
-    ru.startsWith(qLower)
-  ).slice(0, 5);
+  const seen = new Set();
+  const results = [];
+  for (const [key, val] of Object.entries(CITY_MAP)) {
+    if (key.startsWith(qLower) || val.toLowerCase().startsWith(qLower)) {
+      if (!seen.has(val)) {
+        seen.add(val);
+        results.push([key, val]);
+      }
+    }
+    if (results.length >= 6) break;
+  }
+  return results;
 }
 
 function selectCity(value) {
