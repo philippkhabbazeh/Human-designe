@@ -1545,26 +1545,48 @@ async function calculate() {
   if (time) {
     try {
       loadingText.textContent = 'Рассчитываю боди-граф…';
-      const datetime = date + 'T' + time + ':00';
-      // Pad time to HH:MM format
-      const timePadded = time ? time.split(':').map((p,i) => p.padStart(2,'0')).join(':') : time;
-      // Translate city: try to auto-detect Russian and transliterate common cities
+      const timePadded = time.split(':').map(p => p.padStart(2,'0')).join(':');
       const cityEn = translateCity(city || 'Moscow');
-      const body = { date, time: timePadded, city: cityEn };
+      const API_KEY = 'hd_live_hinKpJznl1n93CeF7a8ewN_BGy6YT4ChBmSzdYiB4_Y';
+
+      // Step 1: search location to get timezone
+      let finalDatetime = date + 'T' + timePadded + '+00:00';
+      try {
+        const locResp = await fetch(
+          'https://api.humandesignhub.app/v1/locations/search?query=' + encodeURIComponent(cityEn),
+          { headers: { 'X-API-KEY': API_KEY } }
+        );
+        if (locResp.ok) {
+          const locData = await locResp.json();
+          const loc = (locData.results || locData)[0];
+          const tz = loc && (loc.timezone || loc.iana_timezone);
+          if (tz) {
+            const tzResp = await fetch('https://api.humandesignhub.app/v1/timezone/resolve', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'X-API-KEY': API_KEY },
+              body: JSON.stringify({ date, time: timePadded, timezone: tz })
+            });
+            if (tzResp.ok) {
+              const tzData = await tzResp.json();
+              if (tzData.datetime) finalDatetime = tzData.datetime;
+            }
+          }
+        }
+      } catch(tzErr) { console.log('TZ lookup failed:', tzErr); }
+
+      // Step 2: calculate chart
       const resp = await fetch('https://api.humandesignhub.app/v1/simple-bodygraph', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-API-KEY': 'hd_live_hinKpJznl1n93CeF7a8ewN_BGy6YT4ChBmSzdYiB4_Y'
-        },
-        body: JSON.stringify(body)
+        headers: { 'Content-Type': 'application/json', 'X-API-KEY': API_KEY },
+        body: JSON.stringify({ datetime: finalDatetime })
       });
 
       if (resp.ok) {
         const data = await resp.json();
+        console.log('API response:', JSON.stringify(data));
         loading.classList.remove('active');
         const typeKey = mapApiType(data.type);
-        const apiCenters = data.defined_centers || data.centers || [];
+        const apiCenters = data.defined_centers || data.centers || data.definedCenters || [];
         const apiProfile = data.profile || null;
         const apiAuthority = data.authority || null;
         const apiStrategy = data.strategy || null;
@@ -1572,6 +1594,9 @@ async function calculate() {
         renderResult(currentResult);
         showScreen('screen-result');
         return;
+      } else {
+        const errText = await resp.text();
+        console.log('API error response:', resp.status, errText);
       }
     } catch(e) {
       console.log('API error, falling back:', e);
