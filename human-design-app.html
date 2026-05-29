@@ -1545,7 +1545,11 @@ async function calculate() {
     try {
       loadingText.textContent = 'Рассчитываю боди-граф…';
       const datetime = date + 'T' + time + ':00';
-      const body = { date, time, city: city || 'Moscow' };
+      // Pad time to HH:MM format
+      const timePadded = time ? time.split(':').map((p,i) => p.padStart(2,'0')).join(':') : time;
+      // Translate city: try to auto-detect Russian and transliterate common cities
+      const cityEn = translateCity(city || 'Moscow');
+      const body = { date, time: timePadded, city: cityEn };
       const resp = await fetch('https://api.humandesignhub.app/v1/simple-bodygraph', {
         method: 'POST',
         headers: {
@@ -2360,6 +2364,105 @@ function buildProfileSection(data) {
   text += `<em style="color:var(--text-mid)">"${profile.tagline}"</em>\n\n`;
   text += profile.text.replace(/\{\{name\}\}/g, name);
   return text;
+}
+
+
+// ─── CITY TRANSLATION ────────────────────────────────────────────────────────
+
+const CITY_MAP = {
+  // Russia
+  'москва': 'Moscow, Russia', 'moscow': 'Moscow, Russia',
+  'санкт-петербург': 'Saint Petersburg, Russia', 'питер': 'Saint Petersburg, Russia',
+  'спб': 'Saint Petersburg, Russia', 'saint petersburg': 'Saint Petersburg, Russia',
+  'новосибирск': 'Novosibirsk, Russia', 'екатеринбург': 'Yekaterinburg, Russia',
+  'казань': 'Kazan, Russia', 'нижний новгород': 'Nizhny Novgorod, Russia',
+  'челябинск': 'Chelyabinsk, Russia', 'омск': 'Omsk, Russia',
+  'самара': 'Samara, Russia', 'ростов-на-дону': 'Rostov-on-Don, Russia',
+  'уфа': 'Ufa, Russia', 'красноярск': 'Krasnoyarsk, Russia',
+  'пермь': 'Perm, Russia', 'воронеж': 'Voronezh, Russia',
+  'волгоград': 'Volgograd, Russia', 'краснодар': 'Krasnodar, Russia',
+  'тюмень': 'Tyumen, Russia', 'саратов': 'Saratov, Russia',
+  'тольятти': 'Togliatti, Russia', 'ижевск': 'Izhevsk, Russia',
+  'барнаул': 'Barnaul, Russia', 'ульяновск': 'Ulyanovsk, Russia',
+  'хабаровск': 'Khabarovsk, Russia', 'владивосток': 'Vladivostok, Russia',
+  'иркутск': 'Irkutsk, Russia', 'ярославль': 'Yaroslavl, Russia',
+  'махачкала': 'Makhachkala, Russia', 'томск': 'Tomsk, Russia',
+  'оренбург': 'Orenburg, Russia', 'кемерово': 'Kemerovo, Russia',
+  'новокузнецк': 'Novokuznetsk, Russia', 'рязань': 'Ryazan, Russia',
+  'астрахань': 'Astrakhan, Russia', 'набережные челны': 'Naberezhnye Chelny, Russia',
+  'пенза': 'Penza, Russia', 'липецк': 'Lipetsk, Russia',
+  'тула': 'Tula, Russia', 'киров': 'Kirov, Russia',
+  'чебоксары': 'Cheboksary, Russia', 'калининград': 'Kaliningrad, Russia',
+  'брянск': 'Bryansk, Russia', 'курск': 'Kursk, Russia',
+  'иваново': 'Ivanovo, Russia', 'магнитогорск': 'Magnitogorsk, Russia',
+  'тверь': 'Tver, Russia', 'ставрополь': 'Stavropol, Russia',
+  'белгород': 'Belgorod, Russia', 'сочи': 'Sochi, Russia',
+  'нижний тагил': 'Nizhny Tagil, Russia', 'архангельск': 'Arkhangelsk, Russia',
+  'владимир': 'Vladimir, Russia', 'чита': 'Chita, Russia',
+  'симферополь': 'Simferopol, Russia',
+  // Ukraine
+  'киев': 'Kyiv, Ukraine', 'київ': 'Kyiv, Ukraine', 'kyiv': 'Kyiv, Ukraine',
+  'харьков': 'Kharkiv, Ukraine', 'одесса': 'Odessa, Ukraine',
+  'днепр': 'Dnipro, Ukraine', 'запорожье': 'Zaporizhzhia, Ukraine',
+  'львов': 'Lviv, Ukraine', 'кривой рог': 'Kryvyi Rih, Ukraine',
+  'николаев': 'Mykolaiv, Ukraine', 'мариуполь': 'Mariupol, Ukraine',
+  'луганск': 'Luhansk, Ukraine', 'донецк': 'Donetsk, Ukraine',
+  'винница': 'Vinnytsia, Ukraine', 'полтава': 'Poltava, Ukraine',
+  'херсон': 'Kherson, Ukraine', 'черновцы': 'Chernivtsi, Ukraine',
+  'черкассы': 'Cherkasy, Ukraine', 'сумы': 'Sumy, Ukraine',
+  'житомир': 'Zhytomyr, Ukraine', 'хмельницкий': 'Khmelnytskyi, Ukraine',
+  // Belarus
+  'минск': 'Minsk, Belarus', 'гомель': 'Gomel, Belarus',
+  'могилев': 'Mogilev, Belarus', 'витебск': 'Vitebsk, Belarus',
+  'гродно': 'Grodno, Belarus', 'брест': 'Brest, Belarus',
+  // Kazakhstan
+  'алматы': 'Almaty, Kazakhstan', 'астана': 'Astana, Kazakhstan',
+  'нур-султан': 'Astana, Kazakhstan', 'шымкент': 'Shymkent, Kazakhstan',
+  'актобе': 'Aktobe, Kazakhstan', 'тараз': 'Taraz, Kazakhstan',
+  'павлодар': 'Pavlodar, Kazakhstan', 'усть-каменогорск': 'Ust-Kamenogorsk, Kazakhstan',
+  // Georgia
+  'тбилиси': 'Tbilisi, Georgia', 'батуми': 'Batumi, Georgia',
+  // Armenia
+  'ереван': 'Yerevan, Armenia',
+  // Azerbaijan
+  'баку': 'Baku, Azerbaijan',
+  // Uzbekistan
+  'ташкент': 'Tashkent, Uzbekistan', 'самарканд': 'Samarkand, Uzbekistan',
+  // Israel
+  'тель-авив': 'Tel Aviv, Israel', 'иерусалим': 'Jerusalem, Israel',
+  'хайфа': 'Haifa, Israel',
+  // Germany
+  'берлин': 'Berlin, Germany', 'мюнхен': 'Munich, Germany',
+  'гамбург': 'Hamburg, Germany', 'франкфурт': 'Frankfurt, Germany',
+  'кёльн': 'Cologne, Germany', 'дюссельдорф': 'Dusseldorf, Germany',
+  // Other popular
+  'лондон': 'London, UK', 'paris': 'Paris, France', 'париж': 'Paris, France',
+  'рим': 'Rome, Italy', 'мадрид': 'Madrid, Spain', 'барселона': 'Barcelona, Spain',
+  'нью-йорк': 'New York, USA', 'лос-анджелес': 'Los Angeles, USA',
+  'чикаго': 'Chicago, USA', 'торонто': 'Toronto, Canada',
+  'сидней': 'Sydney, Australia', 'токио': 'Tokyo, Japan',
+  'пекин': 'Beijing, China', 'шанхай': 'Shanghai, China',
+  'дубай': 'Dubai, UAE', 'стамбул': 'Istanbul, Turkey',
+  'варшава': 'Warsaw, Poland', 'прага': 'Prague, Czech Republic',
+  'вена': 'Vienna, Austria', 'амстердам': 'Amsterdam, Netherlands',
+  'стокгольм': 'Stockholm, Sweden', 'осло': 'Oslo, Norway',
+  'хельсинки': 'Helsinki, Finland', 'рига': 'Riga, Latvia',
+  'таллин': 'Tallinn, Estonia', 'вильнюс': 'Vilnius, Lithuania',
+  'бухарест': 'Bucharest, Romania', 'будапешт': 'Budapest, Hungary',
+  'афины': 'Athens, Greece', 'лиссабон': 'Lisbon, Portugal',
+  'монреаль': 'Montreal, Canada', 'майами': 'Miami, USA',
+};
+
+function translateCity(city) {
+  if (!city) return 'Moscow, Russia';
+  const key = city.trim().toLowerCase();
+  if (CITY_MAP[key]) return CITY_MAP[key];
+  // If already looks like English (contains latin chars mostly) — return as is
+  const latinChars = (city.match(/[a-zA-Z]/g) || []).length;
+  const totalChars = city.replace(/\s/g, '').length;
+  if (latinChars / totalChars > 0.5) return city;
+  // Fallback — return original, API might handle it
+  return city;
 }
 
 </script>
