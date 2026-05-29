@@ -843,6 +843,39 @@
     transition: opacity 0.15s;
   }
   .input-icon-btn:hover { opacity: 1; }
+
+  /* SHARE ROW */
+  .share-row {
+    display: flex;
+    gap: 10px;
+    padding: 12px 24px 0;
+  }
+  .btn-share {
+    flex: 1;
+    padding: 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    color: var(--text-mid);
+    font-family: 'Nunito', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .btn-share:active {
+    transform: scale(0.97);
+    background: var(--surface2);
+  }
+  .btn-share.copied {
+    border-color: var(--generator);
+    color: var(--generator);
+  }
 </style>
 </head>
 <body>
@@ -946,6 +979,11 @@
 
     <div class="save-row">
       <button class="btn-save" id="btn-save" onclick="saveContact()">⊕ Сохранить в контакты</button>
+    </div>
+
+    <div class="share-row">
+      <button class="btn-share" onclick="shareResult()">📤 Поделиться</button>
+      <button class="btn-share" id="btn-copy" onclick="copyResult()">📋 Скопировать</button>
     </div>
 
     <div class="result-sections" id="result-sections"></div>
@@ -1710,6 +1748,99 @@ function applyManualTime(str) {
   pickedTime = { hour: h, min: m };
   window._pickedTimeStr = String(h).padStart(2,'0') + ':' + String(m).padStart(2,'0');
   return true;
+}
+
+
+// ─── SHARE / COPY ────────────────────────────────────────────────────────────
+
+function buildShareText() {
+  if (!currentResult) return '';
+  const type = TYPES[currentResult.typeKey];
+  const d = new Date(currentResult.date);
+  const dateStr = d.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' });
+
+  let text = '✦ ДИЗАЙН ЧЕЛОВЕКА ✦\n';
+  text += '━━━━━━━━━━━━━━━━━━━━\n\n';
+  text += '👤 ' + currentResult.name + '\n';
+  text += '📅 ' + dateStr;
+  if (currentResult.city) text += ' · ' + currentResult.city;
+  text += '\n\n';
+  text += '⚡ ТИП: ' + type.name.toUpperCase() + ' (' + type.percent + ')\n';
+  text += '"' + type.tagline + '"\n\n';
+  text += '━━━━━━━━━━━━━━━━━━━━\n\n';
+
+  type.sections.forEach(sec => {
+    text += sec.icon + ' ' + sec.title.toUpperCase() + '\n';
+    // strip HTML tags
+    const plain = sec.text
+      .replace(/<span class="example">/g, '\n💬 ')
+      .replace(/<\/span>/g, '')
+      .replace(/<strong>/g, '')
+      .replace(/<\/strong>/g, '')
+      .replace(/<span class="term">/g, '')
+      .replace(/<em>/g, '')
+      .replace(/<\/em>/g, '')
+      .replace(/<[^>]+>/g, '')
+      .replace(/\n\n/g, '\n')
+      .trim();
+    text += plain + '\n\n';
+  });
+
+  text += '━━━━━━━━━━━━━━━━━━━━\n';
+  text += '🔮 Рассчитано в приложении Дизайн Человека';
+  return text;
+}
+
+function shareResult() {
+  const text = buildShareText();
+  if (!text) return;
+  if (navigator.share) {
+    navigator.share({
+      title: 'Дизайн Человека — ' + currentResult.name,
+      text: text
+    }).catch(() => {});
+  } else {
+    // fallback — copy
+    copyToClipboard(text);
+    showCopied();
+  }
+}
+
+function copyResult() {
+  const text = buildShareText();
+  if (!text) return;
+  copyToClipboard(text);
+  showCopied();
+}
+
+function copyToClipboard(text) {
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).catch(() => fallbackCopy(text));
+  } else {
+    fallbackCopy(text);
+  }
+}
+
+function fallbackCopy(text) {
+  const el = document.createElement('textarea');
+  el.value = text;
+  el.style.position = 'fixed';
+  el.style.opacity = '0';
+  document.body.appendChild(el);
+  el.select();
+  document.execCommand('copy');
+  document.body.removeChild(el);
+}
+
+function showCopied() {
+  const btn = document.getElementById('btn-copy');
+  if (!btn) return;
+  btn.textContent = '✓ Скопировано!';
+  btn.classList.add('copied');
+  setTimeout(() => {
+    btn.textContent = '📋 Скопировать';
+    btn.classList.remove('copied');
+  }, 2000);
 }
 
 </script>
